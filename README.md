@@ -56,31 +56,13 @@ servidor es la única copia.
 
 Requisitos: Docker Engine y Docker Compose v2.17+, y la página web ya levantada.
 
-### 2.0 Acceso al repositorio (es privado)
-
-El servidor se identifica ante GitHub con una *deploy key* (llave SSH de solo lectura, válida
-únicamente para este repositorio):
-
-```bash
-# En el servidor
-ssh-keygen -t ed25519 -C "servidor-gita-appkinson" -f ~/.ssh/appkinson_deploy -N ""
-cat ~/.ssh/appkinson_deploy.pub      # copiar esta línea
-
-# Hacer que git use esa llave para github.com
-cat >> ~/.ssh/config <<'EOF'
-Host github.com
-    IdentityFile ~/.ssh/appkinson_deploy
-    IdentitiesOnly yes
-EOF
-```
-
-El dueño del repositorio la agrega en GitHub → *Settings → Deploy keys → Add deploy key*
-(pegar la línea, **sin** marcar *Allow write access*).
+> El repositorio es **público**: nunca subas `.env` ni `persistente/` (revisa `git status`
+> antes de cada commit). Un secreto subido aquí debe darse por filtrado y cambiarse.
 
 ```bash
 # 1. Descargar
 cd /opt
-git clone git@github.com:Santiago6323/AppkinsonServidor.git
+git clone https://github.com/Santiago6323/AppkinsonServidor.git
 cd AppkinsonServidor
 
 # 2. Configurar
