@@ -1,0 +1,13 @@
+# Solo para PRUEBAS en un PC (sin la página web ni su nginx).
+#
+#   docker network create appkinson_local        # una sola vez
+#   # en .env: RED_PROXY=appkinson_local  y  APPKINSON_RUTA_BASE=
+#   docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
+#
+# Publica la API en el puerto 8000 de todas las interfaces para que el teléfono llegue
+# por la IP del PC (http://<IP>:8000/api/v1). NO usar en el servidor.
+
+services:
+  api:
+    ports:
+      - "${APPKINSON_PUERTO_LOCAL:-8000}:8000"

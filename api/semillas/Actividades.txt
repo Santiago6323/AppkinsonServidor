@@ -1,0 +1,40 @@
+# Semilla del catálogo de tareas: SOLO se usa la primera vez (tabla "tareas" vacía).
+# Después las tareas se administran en la base de datos. Copia de
+# app/src/main/assets/Actividades.txt del repositorio de la app.
+# Modalidad-Codigo-Descripcion-Duracion(segundos)-Instrucción-Activo
+Audio-Frase01-Mi casa tiene tres cuartos-5-Por favor repita las siguientes frases:-true
+Audio-Frase02-Laura sube al tren que pasa-5-Por favor repita las siguientes frases:-true
+Audio-PATAKA-PATAKA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-PETAKA-PETAKA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-PAKATA-PAKATA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-SIFASHU-SIFASHU-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-PA-PA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-TA-TA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-KA-KA-3-Por favor repita rápidamente las siguientes palabras y sílabas:-true
+Audio-Vocala-A-5-Por favor pronuncie la siguiente vocal de forma sostenida (durante por lo menos 3 segundos o hasta que se le acabe el aire. Repita el ejercicio tres (3) veces.)-true
+Audio-Vocale-E-5-Por favor pronuncie la siguiente vocal de forma sostenida (durante por lo menos 3 segundos o hasta que se le acabe el aire. Repita el ejercicio tres (3) veces.)-true
+Audio-Vocali-I-5-Por favor pronuncie la siguiente vocal de forma sostenida (durante por lo menos 3 segundos o hasta que se le acabe el aire. Repita el ejercicio tres (3) veces.)-true
+Audio-VocalO-O-5-Por favor pronuncie la siguiente vocal de forma sostenida (durante por lo menos 3 segundos o hasta que se le acabe el aire. Repita el ejercicio tres (3) veces.)-true
+Audio-VocalU-U-5-Por favor pronuncie la siguiente vocal de forma sostenida (durante por lo menos 3 segundos o hasta que se le acabe el aire. Repita el ejercicio tres (3) veces.)-true
+
+Video-asombro-Levanta las cejas mostrando asombro-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-der-Guiña el ojo derecho-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-dientes-Sonríe mostrando los dientes-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-enojo-Frunce las cejas expresando enojo-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-f_both-Haz toques rápidos con el pulgar e índice de ambas manos-2-Por favor mira a la camara y sigue la instrucción-true
+Video-f_der-Haz toques rápidos con el pulgar e índice de la mano derecha-2-Por favor mira a la camara y sigue la instrucción-true
+Video-f_izq-Haz toques rápidos con el pulgar e índice de la mano izquierda-2-Por favor mira a la camara y sigue la instrucción-true
+Video-izq-Guiña el ojo izquierdo-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-sonrisa-Sonríe sin mostrar los dientes-2-Por favor mira a la camara y haz el siguiente gesto-true
+Video-template-Mueve la cabeza-5-Por favor mira a la camara y haz el siguiente gesto-true
+Video-ReadText--15-Por favor mira a la camara y lee el siguiente texto-true
+Video-Monologo--15--true
+
+Movimiento-StabR-Sosten el celular con la palma de la mano derecha extendida y permanezca en reposo durante 5 segundos-5--true
+Movimiento-StabL-Sosten el celular con la palma de la mano izquierda extendida y permanezca en reposo durante 5 segundos-5--true
+Movimiento-RestR-Apoya el celular sobre la palma de la mano derecha y apoya la mano sobre tu pierna, permanezca en reposo durante 5 segundos-5--true
+Movimiento-RestL-Apoya el celular sobre la palma de la mano izquierda y apoya la mano sobre tu pierna, permanezca en reposo durante 5 segundos-5--true
+Movimiento-NoseR-Agarre el celular con la mano derecha y llevelo hasta su nariz, repita el movimiento durante 5 segundos-5--true
+Movimiento-NoseL-Agarre el celular con la mano izquierda y llevelo hasta su nariz, repita el movimiento durante 5 segundos-5--true
+Movimiento-TwistR-Agarre el celular con la mano derecha y gire la mano dejando el dorso de la mano hacia arriba, repita el movimiento durante 5 segundos-5--true
+Movimiento-TwistL-Agarre el celular con la mano izquierda y gire la mano dejando el dorso de la mano hacia arriba, repita el movimiento durante 5 segundos-5--true

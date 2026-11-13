@@ -1,0 +1,128 @@
+# Appkinson — servidor completo.
+#
+#   cp .env.example .env      # y completar
+#   docker compose up -d --build
+#
+# Servicios:
+#   db        PostgreSQL 16 (solo en la red interna; sin puerto en el host)
+#   permisos  Prepara la carpeta de grabaciones y termina
+#   api       API FastAPI. Sin puerto en el host: la recibe el nginx de la página web a
+#             través de la red compartida RED_PROXY (ver nginx/appkinson.conf)
+#   adminer   Ver/editar la base de datos (solo 127.0.0.1:8080; túnel SSH)
+#   respaldo  pg_dump diario comprimido
+#
+# Carpetas persistentes (conservar y respaldar):
+#   ./persistente/postgres    archivos internos de PostgreSQL
+#   ./persistente/datos       grabaciones: archivos/<documento>/Sesion_N/<modalidad>/...
+#   ./persistente/respaldos   copias diarias de la base de datos
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: appkinson_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-appkinson}
+      POSTGRES_USER: ${POSTGRES_USER:-appkinson}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Definir POSTGRES_PASSWORD en .env}
+    volumes:
+      - ./persistente/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-appkinson} -d ${POSTGRES_DB:-appkinson}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - interna
+
+  permisos:
+    image: alpine:3.20
+    container_name: appkinson_permisos
+    # La API corre como UID 1000 (sin privilegios); Docker crea las carpetas montadas como
+    # root, así que se les asigna el dueño correcto antes de arrancar.
+    command: >
+      sh -c "mkdir -p /datos/archivos /datos/tmp &&
+             chown 1000:1000 /datos /datos/archivos /datos/tmp"
+    volumes:
+      - ./persistente/datos:/datos
+    network_mode: none
+
+  api:
+    build:
+      context: ./api
+    image: appkinson-api:1
+    container_name: appkinson_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      permisos:
+        condition: service_completed_successfully
+    environment:
+      APPKINSON_TOKEN: ${APPKINSON_TOKEN:?Definir APPKINSON_TOKEN en .env}
+      APPKINSON_TAMANO_MAX_MB: ${APPKINSON_TAMANO_MAX_MB:-200}
+      APPKINSON_RUTA_BASE: ${APPKINSON_RUTA_BASE:-/appkinson}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-appkinson}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-appkinson}
+    expose:
+      - "8000"
+    volumes:
+      - ./persistente/datos:/datos
+    networks:
+      - interna
+      - proxy
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: appkinson_adminer
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      # Solo desde la propia máquina. Desde otro equipo: túnel SSH (ver README).
+      - "127.0.0.1:${APPKINSON_ADMINER_PUERTO:-8080}:8080"
+    networks:
+      - interna
+
+  respaldo:
+    image: postgres:16-alpine
+    container_name: appkinson_respaldo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:-appkinson}
+      PGDATABASE: ${POSTGRES_DB:-appkinson}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      DIAS_RETENCION: ${APPKINSON_DIAS_RESPALDO:-30}
+    # Al arrancar y luego cada 24 h: pg_dump comprimido; borra los de más de DIAS_RETENCION días.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        while true; do
+          f=/respaldos/appkinson_$$(date +%Y-%m-%d_%H%M).sql.gz
+          if pg_dump --no-owner | gzip > "$$f.tmp" && mv "$$f.tmp" "$$f"; then
+            echo "$$(date -Iseconds) Respaldo creado: $$f"
+          else
+            echo "$$(date -Iseconds) ERROR creando respaldo" >&2; rm -f "$$f.tmp"
+          fi
+          find /respaldos -name 'appkinson_*.sql.gz' -mtime +"$$DIAS_RETENCION" -delete
+          sleep 86400
+        done
+    volumes:
+      - ./persistente/respaldos:/respaldos
+    networks:
+      - interna
+
+networks:
+  # Red privada de Appkinson: la base de datos solo es visible aquí.
+  interna:
+  # Red del proxy de la página web (ya existe; la crea el compose de research-site-v2).
+  # Su nombre real se ve con: docker network ls   (p. ej. research-site-v2_web)
+  proxy:
+    external: true
+    name: ${RED_PROXY:?Definir RED_PROXY en .env (docker network ls)}
